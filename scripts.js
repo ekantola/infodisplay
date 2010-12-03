@@ -68,16 +68,25 @@
         }
     }
 
-    function populateTable(stopId, arrivalData, busCount) {
-        var tableId = "#stop_" + stopId;
-        $(tableId).empty();
+    function populateTable(stopConfig, arrivalData, maxDepartures) {
+        var tableId = 'stop_' + stopConfig.id;
+        var table = $('#' + tableId);
+        if (table.length === 0) {
+            $('#schedules').append(
+                '<h2>' + stopConfig.name + ' <span>(' + stopConfig.description + ')</span></h2>' +
+                '<table id="' + tableId + '" class="arrivalDataTable"></table>');
+            table = $('#' + tableId);
+        } else {
+            table.empty();
+        }
+
         var total = 0;
-        for (var i=0; i<arrivalData.length && total < busCount; i++) {
+        for (var i=0; i<arrivalData.length && total<maxDepartures; i++) {
             var item = arrivalData[i];
             var stopTime = formatHourMinTime(item.time);
             var diffTime = Math.round((item.time - now) / (1000*60));
             if (diffTime > 0) {
-                $(tableId).append(
+                table.append(
                     '<tr><td class="line">' + item.busLineName + '</td>' +
                     '<td class="destination">' + /*item.destination +*/ (item.busLineName == 501 ? 'Espoo' : 'Helsinki') + '</td>' +
                     '<td class="diffTime">' + diffMinutesToStr(diffTime) + '</td>' +
@@ -142,15 +151,20 @@
         return returnData;
     }
 
+    function refreshBusStop(stopConfig) {
+        return function(data) {
+            populateTable(
+                stopConfig,
+                getReittiopasStopData(data),
+                stopConfig.maxDepartures || config.defaults.maxDepartures);
+        };
+    }
+
     function refreshBusStops(stops) {
+        $('#schedules').empty();
         for (var i=0; i<stops.length; i++) {
             var stop = stops[i];
-            $.get(config.reittiopas.baseUrl + stop.id, function(data) {
-                populateTable(
-                    this.url.substr(this.url.lastIndexOf("=") + 1),
-                    getReittiopasStopData(data),
-                    stop.maxDepartures || config.defaults.maxDepartures);
-            });
+            $.get(config.reittiopas.baseUrl + stop.id, refreshBusStop(stop));
         }
     }
 
@@ -199,20 +213,18 @@
 
     $(document).ready(function() {
         // Localizations
-        setTimeout(function() {
-            $('[i18n]').each(function() {
-                var elem = $(this);
-                var key = elem.attr('i18n');
-                var value = i18n[key];
-                if (value) {
-                    elem.text(value);
-                } else {
-                    console.log('No good: ' + key);
-                }
-            });
-        }, 1000);
+        $('[i18n]').each(function() {
+            var elem = $(this);
+            var key = elem.attr('i18n');
+            var value = i18n[key];
+            if (value) {
+                elem.text(value);
+            } else {
+                //console.log('No good: ' + key);
+            }
+        });
 
-        setInterval(updateTime, config.interval.clockUpdate);
+        setInterval(updateTime, config.intervals.clockUpdate);
 
         refreshWeatherForecasts(config.weatherbug.locations);
         setInterval(refreshWeatherForecasts, config.intervals.weatherRefresh, config.weatherbug.locations);
