@@ -4,11 +4,11 @@ infodisplayConfig = $.extend({}, infodisplayConfig, (function() {
 
     // Reittiopas
     config.reittiopas = {};
-    config.reittiopas.username = "";
-    config.reittiopas.password = "";
+    config.reittiopas.username = "<INSERT USERNAME HERE>";
+    config.reittiopas.password = "<INSERT PASSWORD HERE>";
     config.reittiopas.baseUrl = 'http://api.reittiopas.fi/public-ytv/fi/api/?user=' + config.reittiopas.username + '&pass=' + config.reittiopas.password + '&stop=';
 
-    config.reittiopas.stops = [
+    config.reittiopas.stops = [ // Examples
         {
             name: "Long walk",
             url: config.reittiopas.baseUrl + '1055'
@@ -21,11 +21,11 @@ infodisplayConfig = $.extend({}, infodisplayConfig, (function() {
 
     // Weatherbug
     config.weatherbug = {};
-    config.weatherbug.API_CODE = '';
+    config.weatherbug.API_CODE = '<INSERT CODE HERE>';
     config.weatherbug.BASE_URL = 'http://' + config.weatherbug.apiCode + '.api.wxbug.net/getLiveWeatherRSS.aspx';
 
     // Search city codes by 'http://a4673533785.api.wxbug.net/getLocationsXML.aspx?ACode=A4673533785&SearchString=<city name>'
-    config.weatherbug.locations = [
+    config.weatherbug.locations = [ // Examples
         { name: "Helsinki", code: 62073 },
         { name: "Tampere", code: 62152 },
         { name: "Berlin", code: 58439 }

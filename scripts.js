@@ -68,7 +68,9 @@
         }
     }
 
-    function populateTable(tableId, arrivalData) {
+    function populateTable(stopId, arrivalData) {
+        var tableId = "#stop_" + stopId;
+        $(tableId).empty();
         var total = 0;
         for (var i=0; i<arrivalData.length && total < config.ARRIVAL_ITEMS; i++) {
             var item = arrivalData[i];
@@ -140,16 +142,12 @@
         return returnData;
     }
 
-    function refreshReittiopasData() {
-        // FIXME: iterate over the dynamic list
-//        $.get(config.SHORT_WALK_STOP_URL, function(data) {
-//            $('#shortwalk_table').empty();
-//            populateTable('#shortwalk_table', getReittiopasStopData(data));
-//        });
-//        $.get(config.LONG_WALK_STOP_URL, function(data) {
-//            $('#longwalk_table').empty();
-//            populateTable('#longwalk_table', getReittiopasStopData(data));
-//        });
+    function refreshBusStops(stops) {
+        for(var i = 0; i < stops.length; i++) {
+            $.get(config.reittiopas.baseUrl + stops[i].id, function(data) {
+                populateTable(this.url.substr(this.url.lastIndexOf("=") + 1), getReittiopasStopData(data));
+            });
+        }
     }
 
     /*
@@ -211,8 +209,8 @@
         refreshWeatherForecasts(config.weatherbug.locations);
         setInterval(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS, config.weatherbug.locations);
 
-// TODO
-//        setInterval(refreshReittiopasData, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS);
+        refreshBusStops(config.reittiopas.stops);
+        setInterval(refreshBusStops, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS, config.reittiopas.stops);
 
         if (config.taxi) {
           if (config.taxi.sms) {
