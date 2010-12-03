@@ -1,8 +1,8 @@
 /*globals jQuery */
 
-(function($) {
+(function($, config) {
     var now = new Date();
-    
+
     /*
      * Time formatting, displaying and friends
      */
@@ -47,7 +47,6 @@
         now = new Date();
         $('#date').text(('' + now).substring(0, 10));
         $('#time').text(formatHourMinTime(now));
-        setTimeout(updateTime, CLOCK_UPDATE_TIMEOUT_MILLIS);
     }
     
     /*
@@ -66,7 +65,7 @@
     
     function populateTable(tableId, arrivalData) {
         var total = 0;
-        for (var i=0; i<arrivalData.length && total<ARRIVAL_ITEMS; i++) {
+        for (var i=0; i<arrivalData.length && total < config.ARRIVAL_ITEMS; i++) {
             var item = arrivalData[i];
             var stopTime = formatHourMinTime(item.time);
             var diffTime = Math.round((item.time - now) / (1000*60));
@@ -92,7 +91,7 @@
         for (var i=0; i<savedItems.length; ++i) {
             var item = savedItems[i];
             var timeDiff = (evaluateItem.time.getHours()*60 + evaluateItem.time.getMinutes()) - (item.time.getHours()*60 + item.time.getMinutes());
-            if (evaluateItem.busLineName === item.busLineName && (timeDiff <= TIME_LIMIT)) {
+            if (evaluateItem.busLineName === item.busLineName && (timeDiff <= config.TIME_LIMIT)) {
                 return false;
             }
         }
@@ -137,34 +136,28 @@
     }
     
     function refreshReittiopasData() {
-        $.get(SHORT_WALK_STOP_URL, function(data) {
-            $('#shortwalk_table').empty();
-            populateTable('#shortwalk_table', getReittiopasStopData(data));
-        });
-        $.get(LONG_WALK_STOP_URL, function(data) {
-            $('#longwalk_table').empty();
-            populateTable('#longwalk_table', getReittiopasStopData(data));
-        });
-        setTimeout(refreshReittiopasData, REITTIOPAS_REFRESH_TIMEOUT_MILLIS);
+        // FIXME: iterate over the dynamic list
+//        $.get(config.SHORT_WALK_STOP_URL, function(data) {
+//            $('#shortwalk_table').empty();
+//            populateTable('#shortwalk_table', getReittiopasStopData(data));
+//        });
+//        $.get(config.LONG_WALK_STOP_URL, function(data) {
+//            $('#longwalk_table').empty();
+//            populateTable('#longwalk_table', getReittiopasStopData(data));
+//        });
     }
     
     /*
      * Weather
      */
     
-    // Search city codes by 'http://a4673533785.api.wxbug.net/getLocationsXML.aspx?ACode=A4673533785&SearchString=<city name>'
-    var CITY_CODES = {
-        Helsinki: 62073,
-        Tampere: 62152,
-        Berlin: 58439
-    };
-    
-    function refreshWeatherForecastForCity(city) {
-        $.get(WEATHERBUG_BASE_URL, {
-            ACode: WEATHERBUG_API_CODE,
+    function refreshWeatherForecastForCity(location) {
+        $.get(config.weatherbug.BASE_URL, {
+            ACode: config.weatherbug.API_CODE,
             unittype: 1,
-            citycode: CITY_CODES[city]
+            citycode: location.code
         }, function(data) {
+            // FIXME: borken here?
             var desc = $(data).find('item:first').find('description:first');
             // Turn the CDATA content into jQuery DOM object, wrapping it inside a div first to make find() work
             var descDOM = $('<div>' + desc.text() + '</div>');
@@ -182,19 +175,18 @@
             }
     
             // Update image and temp in UI
-            var forecast = $('#weather' + city);
+            var forecast = $('#weather' + location.name);
             forecast.find('.conditions img').attr('src', imgUrl);
             forecast.find('.temp .value').text(temp);
         });
     }
     
     function refreshWeatherForecasts() {
-        for (var city in CITY_CODES) {
-            if (CITY_CODES.hasOwnProperty(city)) {
-                refreshWeatherForecastForCity(city);
-            }
+        console.log("refreshWeatherForecasts");
+        for (var location in config.weatherbug.locations) {
+            refreshWeatherForecastForCity(location);
         }
-        setTimeout(refreshWeatherForecasts, WEATHER_REFRESH_TIMEOUT_MILLIS);
+        setTimeout(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS);
     }
     
     /*
@@ -202,8 +194,10 @@
      */
     
     $(document).ready(function() {
-		updateTime();
-        refreshReittiopasData();
+        console.log(config);
         refreshWeatherForecasts();
+//        setInterval(updateTime, config.CLOCK_UPDATE_TIMEOUT_MILLIS);
+//        setInterval(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS);
+//        setInterval(refreshReittiopasData, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS);
     });
-}(jQuery));
+}(jQuery, infodisplayConfig));
