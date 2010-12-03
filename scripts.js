@@ -1,12 +1,12 @@
 /*globals jQuery */
 
 (function($, config) {
+//    debugger;
     var now = new Date();
 
     /*
      * Time formatting, displaying and friends
      */
-    
     function repeat(str, count) {
         var outStr = '';
         for (var i=0; i<count; ++i) {
@@ -63,14 +63,17 @@
         }
     }
     
-    function populateTable(tableId, arrivalData) {
+    function populateTable(stopId, arrivalData) {
+        var tableId = "#stop_" + stopId;
+        // WTF? Why don't $ work?'
+        jQuery(tableId).empty();
         var total = 0;
         for (var i=0; i<arrivalData.length && total < config.ARRIVAL_ITEMS; i++) {
             var item = arrivalData[i];
             var stopTime = formatHourMinTime(item.time);
             var diffTime = Math.round((item.time - now) / (1000*60));
             if (diffTime > 0) {
-                $(tableId).append(
+                jQuery(tableId).append(
                     '<tr><td class="line">' + item.busLineName + '</td>' +
                     '<td class="destination">' + /*item.destination +*/ (item.busLineName == 501 ? 'Espoo' : 'Helsinki') + '</td>' +
                     '<td class="diffTime">' + diffMinutesToStr(diffTime) + '</td>' +
@@ -135,16 +138,12 @@
         return returnData;
     }
     
-    function refreshReittiopasData() {
-        // FIXME: iterate over the dynamic list
-//        $.get(config.SHORT_WALK_STOP_URL, function(data) {
-//            $('#shortwalk_table').empty();
-//            populateTable('#shortwalk_table', getReittiopasStopData(data));
-//        });
-//        $.get(config.LONG_WALK_STOP_URL, function(data) {
-//            $('#longwalk_table').empty();
-//            populateTable('#longwalk_table', getReittiopasStopData(data));
-//        });
+    function refreshBusStops(stops) {
+        for(var i = 0; i < stops.length; i++) {
+            $.get(config.reittiopas.baseUrl + stops[i].id, function(data) {
+                populateTable(this.url.substr(this.url.lastIndexOf("=") + 1), getReittiopasStopData(data));
+            });
+        }
     }
     
     /*
@@ -189,14 +188,14 @@
     /*
      * Other
      */
-    
+//    debugger;
     $(document).ready(function() {
         setInterval(updateTime, config.CLOCK_UPDATE_TIMEOUT_MILLIS);
 
         refreshWeatherForecasts(config.weatherbug.locations);
         setInterval(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS, config.weatherbug.locations);
 
-// TODO
-//        setInterval(refreshReittiopasData, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS);
+        refreshBusStops(config.reittiopas.stops);
+        setInterval(refreshBusStops, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS, config.reittiopas.stops);
     });
 }(jQuery, infodisplayConfig));
