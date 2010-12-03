@@ -64,15 +64,14 @@
     
     function populateTable(stopId, arrivalData) {
         var tableId = "#stop_" + stopId;
-        // WTF? Why don't $ work?'
-        jQuery(tableId).empty();
+        $(tableId).empty();
         var total = 0;
         for (var i=0; i<arrivalData.length && total < config.ARRIVAL_ITEMS; i++) {
             var item = arrivalData[i];
             var stopTime = formatHourMinTime(item.time);
             var diffTime = Math.round((item.time - now) / (1000*60));
             if (diffTime > 0) {
-                jQuery(tableId).append(
+                $(tableId).append(
                     '<tr><td class="line">' + item.busLineName + '</td>' +
                     '<td class="destination">' + /*item.destination +*/ (item.busLineName == 501 ? 'Espoo' : 'Helsinki') + '</td>' +
                     '<td class="diffTime">' + diffMinutesToStr(diffTime) + '</td>' +
