@@ -68,11 +68,11 @@
         }
     }
 
-    function populateTable(stopId, arrivalData) {
+    function populateTable(stopId, arrivalData, busCount) {
         var tableId = "#stop_" + stopId;
         $(tableId).empty();
         var total = 0;
-        for (var i=0; i<arrivalData.length && total < config.ARRIVAL_ITEMS; i++) {
+        for (var i=0; i<arrivalData.length && total < busCount; i++) {
             var item = arrivalData[i];
             var stopTime = formatHourMinTime(item.time);
             var diffTime = Math.round((item.time - now) / (1000*60));
@@ -98,7 +98,7 @@
         for (var i=0; i<savedItems.length; ++i) {
             var item = savedItems[i];
             var timeDiff = (evaluateItem.time.getHours()*60 + evaluateItem.time.getMinutes()) - (item.time.getHours()*60 + item.time.getMinutes());
-            if (evaluateItem.busLineName === item.busLineName && (timeDiff <= config.TIME_LIMIT)) {
+            if (evaluateItem.busLineName === item.busLineName && (timeDiff <= config.intervals.busTimeLimitMins)) {
                 return false;
             }
         }
@@ -143,9 +143,13 @@
     }
 
     function refreshBusStops(stops) {
-        for(var i = 0; i < stops.length; i++) {
-            $.get(config.reittiopas.baseUrl + stops[i].id, function(data) {
-                populateTable(this.url.substr(this.url.lastIndexOf("=") + 1), getReittiopasStopData(data));
+        for (var i=0; i<stops.length; i++) {
+            var stop = stops[i];
+            $.get(config.reittiopas.baseUrl + stop.id, function(data) {
+                populateTable(
+                    this.url.substr(this.url.lastIndexOf("=") + 1),
+                    getReittiopasStopData(data),
+                    stop.maxDepartures || config.defaults.maxDepartures);
             });
         }
     }
@@ -155,8 +159,8 @@
      */
 
     function refreshWeatherForecastForCity(location) {
-        $.get(config.weatherbug.BASE_URL, {
-            ACode: config.weatherbug.API_CODE,
+        $.get(config.weatherbug.baseUrl, {
+            ACode: config.weatherbug.apiCode,
             unittype: 1,
             citycode: location.code
         }, function(data) {
@@ -195,22 +199,26 @@
 
     $(document).ready(function() {
         // Localizations
-        $('[i18n]').each(function() {
-            var elem = $(this);
-            var key = elem.attr('i18n');
-            var value = i18n[key];
-            if (value) {
-                elem.text(value);
-            }
-        });
+        setTimeout(function() {
+            $('[i18n]').each(function() {
+                var elem = $(this);
+                var key = elem.attr('i18n');
+                var value = i18n[key];
+                if (value) {
+                    elem.text(value);
+                } else {
+                    console.log('No good: ' + key);
+                }
+            });
+        }, 1000);
 
-        setInterval(updateTime, config.CLOCK_UPDATE_TIMEOUT_MILLIS);
+        setInterval(updateTime, config.interval.clockUpdate);
 
         refreshWeatherForecasts(config.weatherbug.locations);
-        setInterval(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS, config.weatherbug.locations);
+        setInterval(refreshWeatherForecasts, config.intervals.weatherRefresh, config.weatherbug.locations);
 
         refreshBusStops(config.reittiopas.stops);
-        setInterval(refreshBusStops, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS, config.reittiopas.stops);
+        setInterval(refreshBusStops, config.intervals.busScheduleRefresh, config.reittiopas.stops);
 
         if (config.taxi) {
           if (config.taxi.sms) {

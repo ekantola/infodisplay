@@ -9,8 +9,7 @@ Running:
 
 2) Copy config.local.js.tmpl to config.local.js and add the API keys (Reittiopas, WeatherBug)
 
-3) Open index.html with Google chrome with XSS protection disabled:
+3) Open index.html using Google Chrome with XSS protection disabled:
   google-chrome --disable-web-security index.html
 
-4) If it seems to work properly, switch to fullscreen and enjoy.
-
+4) If the page seems to work properly, switch to fullscreen and enjoy.

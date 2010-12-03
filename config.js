@@ -5,11 +5,14 @@
 var infodisplayConfig = {
     LANG: 'en',
 
-    CLOCK_UPDATE_TIMEOUT_MILLIS: 100,
-    PAGE_RELOAD_INTERVAL_MILLIS: 1000*60*30,
-    REITTIOPAS_REFRESH_TIMEOUT_MILLIS: 1000*10,
-    WEATHER_REFRESH_TIMEOUT_MILLIS: 1000*60*5,
-    TIME_LIMIT: 10,
-    ARRIVAL_ITEMS: 4
-};
+    intervals: {
+        clockUpdate: 100 /*0.1 secs*/,
+        busScheduleRefresh: 1000*10 /*10 secs*/,
+        busTimeLimitMins: 600,
+        weatherRefresh: 1000*60*5 /*5 mins*/
+    },
 
+    defaults: {
+        maxDepartures: 4
+    }
+};

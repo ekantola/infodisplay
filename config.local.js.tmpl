@@ -10,21 +10,21 @@ infodisplayConfig = $.extend({}, infodisplayConfig, (function() {
 
     config.reittiopas.stops = [ // Examples
         {
-            name: "Long walk",
-            url: config.reittiopas.baseUrl + '1055'
+            name: 'Long walk',
+            id: '1055'
         },
         {
-            name: "Short walk",
-            url: config.reittiopas.baseUrl + '1045'
+            name: 'Short walk',
+            id: '1045'
         }
     ];
 
     // Weatherbug
     config.weatherbug = {};
-    config.weatherbug.API_CODE = '<INSERT CODE HERE>';
-    config.weatherbug.BASE_URL = 'http://' + config.weatherbug.apiCode + '.api.wxbug.net/getLiveWeatherRSS.aspx';
+    config.weatherbug.apiCode = '<INSERT CODE HERE>';
+    config.weatherbug.baseUrl = 'http://' + config.weatherbug.apiCode + '.api.wxbug.net/getLiveWeatherRSS.aspx';
 
-    // Search city codes by 'http://a4673533785.api.wxbug.net/getLocationsXML.aspx?ACode=A4673533785&SearchString=<city name>'
+    // Search city codes by 'http://<APICODE>.api.wxbug.net/getLocationsXML.aspx?ACode=<APICODE>&SearchString=<city name>'
     config.weatherbug.locations = [ // Examples
         { name: "Helsinki", code: 62073 },
         { name: "Tampere", code: 62152 },
@@ -32,7 +32,7 @@ infodisplayConfig = $.extend({}, infodisplayConfig, (function() {
     ];
 
     // Taxi (optional)
-    /*
+    //*
     config.taxi = {
         sms: {
           number: '13170',
