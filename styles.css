@@ -26,7 +26,8 @@ BASIC STYLES for tags
 ================================================================================
 */
 
-body{ max-width: 1080px; max-height: 1920px; font-family: 'Droid Sans', Verdana, Arial, Helvetica, sans-serif; font-size: 60px; line-height: 1.5; color: #000; background-color: #fff; }
+html{ overflow: hidden; }
+body{ overflow: hidden; max-width: 1080px; max-height: 1920px; font-family: 'Droid Sans', Verdana, Arial, Helvetica, sans-serif; font-size: 60px; line-height: 1.5; color: #000; background-color: #fff; }
 h1, h2, h3, h4, h5, h6{ font-family: 'Nobile', Verdana, Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1; }
 h1{ font-size: 72px; text-transform: uppercase; }
 h2{ font-size: 60px; }
@@ -66,12 +67,15 @@ div#buses table .destination{ width: 20%; color: #878681; }
 div#buses table .diffTime{ width: 40%; text-align: right; }
 div#buses table .stopTime{ width: 20%; text-align: right; color: #878681; }
 
-div#taxi{ position: relative; margin: 0 -20px; padding: 40px; text-align: center; line-height: 1.25; color: #fff; background-color: #4C9018;
+div#taxi{ display: none; position: relative; margin: 0 -20px; padding: 40px; text-align: center; line-height: 1.25; color: #fff; background-color: #4C9018;
 	-webkit-border-radius: 20px; -moz-border-radius: 20px; border-radius: 20px;
 	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.25); -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.25); box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.25)));
   background-image: -moz-linear-gradient(100% 100% 90deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0)); }
 div#taxi h2{ position: absolute; top: -0.9em; left: 0px; width: 100%; font-size: 72px; line-height: 1; text-align: center; text-transform: uppercase; letter-spacing: 0.25em; color: #4C9018; }
+div#taxi #taxi_sms{ display: none; }
+div#taxi #taxi_phone{ display: none; }
+div#taxi #taxi_or{ display: none; }
 /* div#taxi h2{ position: relative; margin-bottom: 20px; padding: 10px; background-color: rgba(0, 0, 0, 0.1);
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0, 0, 0, 0.1)), to(rgba(0, 0, 0, 0)));

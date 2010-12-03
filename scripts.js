@@ -1,7 +1,6 @@
 /*globals jQuery */
 
 (function($, config) {
-//    debugger;
     var now = new Date();
 
     /*
@@ -188,7 +187,6 @@
     /*
      * Other
      */
-//    debugger;
     $(document).ready(function() {
         setInterval(updateTime, config.CLOCK_UPDATE_TIMEOUT_MILLIS);
 
@@ -197,5 +195,21 @@
 
         refreshBusStops(config.reittiopas.stops);
         setInterval(refreshBusStops, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS, config.reittiopas.stops);
+        
+        if (config.taxi) {
+          if (config.taxi.sms) {
+            $('#taxi_address').text(config.taxi.sms.address);
+            $('#taxi_smsnumber').text(config.taxi.sms.number);
+            $('#taxi_sms').show();
+          }
+          if (config.taxi.phone) {
+            if (config.taxi.sms) {
+              $('#taxi_or').show();
+            }
+            $('#taxi_phonenumber').text(config.taxi.phone);
+            $('#taxi_phone').show();
+          }
+          $('#taxi').show();
+        }
     });
 }(jQuery, infodisplayConfig));
