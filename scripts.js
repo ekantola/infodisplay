@@ -157,7 +157,6 @@
             unittype: 1,
             citycode: location.code
         }, function(data) {
-            // FIXME: borken here?
             var desc = $(data).find('item:first').find('description:first');
             // Turn the CDATA content into jQuery DOM object, wrapping it inside a div first to make find() work
             var descDOM = $('<div>' + desc.text() + '</div>');
@@ -181,12 +180,10 @@
         });
     }
     
-    function refreshWeatherForecasts() {
-        console.log("refreshWeatherForecasts");
-        for (var location in config.weatherbug.locations) {
-            refreshWeatherForecastForCity(location);
+    function refreshWeatherForecasts(locations) {
+        for(var i = 0; i < locations.length; i++) {
+            refreshWeatherForecastForCity(locations[i]);
         }
-        setTimeout(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS);
     }
     
     /*
@@ -194,10 +191,12 @@
      */
     
     $(document).ready(function() {
-        console.log(config);
-        refreshWeatherForecasts();
-//        setInterval(updateTime, config.CLOCK_UPDATE_TIMEOUT_MILLIS);
-//        setInterval(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS);
+        setInterval(updateTime, config.CLOCK_UPDATE_TIMEOUT_MILLIS);
+
+        refreshWeatherForecasts(config.weatherbug.locations);
+        setInterval(refreshWeatherForecasts, config.WEATHER_REFRESH_TIMEOUT_MILLIS, config.weatherbug.locations);
+
+// TODO
 //        setInterval(refreshReittiopasData, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS);
     });
 }(jQuery, infodisplayConfig));
