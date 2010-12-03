@@ -51,12 +51,19 @@
 		</div>
 		<div id="taxi">
 			<h2><div class="glare"></div>Prefer a taxi?</h2>
-			<p>Send a following SMS<br />"<strong>helsinki vattuniemenranta 2</strong>"<br /> to <strong>13170</strong> <em>or</em><br/>call <strong>0100 0700</strong></p>
+			<p id="taxi_sms">
+				Send the following SMS<br />
+				"<strong id="taxi_address">XXX</strong>"<br />
+				to <strong id="taxi_smsnumber">XXX</strong> <em id="taxi_or">or</em><br/>
+			</p>
+			<p id="taxi_phone">
+				call <strong id="taxi_phonenumber">XXX</strong>
+			</p>
 		</div>
 	</div>
 </body>
 
-<script src="lib/jquery-1.4.2.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script src="config.js"></script>
 <script src="config.local.js"></script>
 <script src="scripts.js"></script>

@@ -198,5 +198,21 @@
 
 // TODO
 //        setInterval(refreshReittiopasData, config.REITTIOPAS_REFRESH_TIMEOUT_MILLIS);
+        
+        if (config.taxi) {
+          if (config.taxi.sms) {
+            $('#taxi_address').text(config.taxi.sms.address);
+            $('#taxi_smsnumber').text(config.taxi.sms.number);
+            $('#taxi_sms').show();
+          }
+          if (config.taxi.phone) {
+            if (config.taxi.sms) {
+              $('#taxi_or').show();
+            }
+            $('#taxi_phonenumber').text(config.taxi.phone);
+            $('#taxi_phone').show();
+          }
+          $('#taxi').show();
+        }
     });
 }(jQuery, infodisplayConfig));
